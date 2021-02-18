@@ -74,10 +74,10 @@ class CashCalculator(Calculator):
         except KeyError:
             return self.KEY_ERROR_CURRENCY.format(name=currency)
         benchmark = self.get_today_stats()
-        base_amount = self.limit - self.get_today_stats()
-        self.remainder = round(base_amount/rate, 2)
         if self.limit == benchmark:
             return self.BALANCE
+        base_amount = self.limit - self.get_today_stats()
+        self.remainder = round(base_amount/rate, 2)
         if self.limit > benchmark:
             return self.SURPLUS.format(money=self.remainder,
                                        name=name)
@@ -86,7 +86,7 @@ class CashCalculator(Calculator):
 
 
 if __name__ == "__main__":
-    cash_calculator = CashCalculator(1000)
+    cash_calculator = CashCalculator(1400)
     r1 = Record(amount=145, comment='Безудержный шопинг', date='08.03.2019')
     cash_calculator.add_record(Record(amount=200,
                                       comment='бар в Танин др',
@@ -97,7 +97,7 @@ if __name__ == "__main__":
                                       comment='бар в Танин др',
                                       date='01.02.2021'))
     print(cash_calculator.get_today_stats())
-    print(cash_calculator.get_today_cash_remained('usd'))
+    print(cash_calculator.get_today_cash_remained('rub'))
     print(cash_calculator.get_week_stats())
     # Проверка на выходные данные Калокулятора калорий:
     calories_calculator = CaloriesCalculator(2000)

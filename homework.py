@@ -77,7 +77,7 @@ class CashCalculator(Calculator):
         if self.limit == benchmark:
             return self.BALANCE
         base_amount = self.limit - self.get_today_stats()
-        self.remainder = round(base_amount/rate, 2)
+        self.remainder = round(base_amount / rate, 2)
         if self.limit > benchmark:
             return self.SURPLUS.format(money=self.remainder,
                                        name=name)

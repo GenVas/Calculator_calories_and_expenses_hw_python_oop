@@ -34,7 +34,7 @@ class Record:
         self.amount = amount
         self.comment = comment
         if date is None:
-            self.date = dt.datetime.now().date()
+            self.date = dt.date.today()
         else:
             self.date = dt.datetime.strptime(date, self.TIME_FORMAT).date()
 
@@ -45,9 +45,9 @@ class CaloriesCalculator(Calculator):
                 "но с общей калорийностью не более {remainder} кКал")
 
     def get_calories_remained(self):
-        limit, today_stats = self.limit, self.get_today_stats()
-        remainder = limit - today_stats
-        return (self.NEGATIVE if limit <= today_stats
+        today_stats = self.get_today_stats()
+        remainder = self.limit - today_stats
+        return (self.NEGATIVE if self.limit <= today_stats
                 else self.POSITIVE.format(remainder=remainder))
 
 
@@ -61,19 +61,18 @@ class CashCalculator(Calculator):
     BALANCE = "Денег нет, держись"
     DEFICIT = ("Денег нет, держись: твой долг - "
                "{money} {name}")
-    ERROR_CURRENCY = ("currency input \"{name}\""
-                      " is not in CURRENCIES")
+    ERROR_CURRENCY = ("Wrong currency input")
 
     def get_today_cash_remained(self, currency):
-        today_stats, limit = self.get_today_stats(), self.limit
-        if limit == today_stats:
-            return self.BALANCE
         if currency not in self.CURRENCIES:
             raise ValueError(self.ERROR_CURRENCY.format(name=currency))
+        today_stats = self.get_today_stats()
+        if self.limit == today_stats:
+            return self.BALANCE
         rate, name = self.CURRENCIES[currency]
-        base_amount = limit - today_stats
+        base_amount = self.limit - today_stats
         remainder = round(base_amount / rate, 2)
-        if limit > today_stats:
+        if self.limit > today_stats:
             return self.SURPLUS.format(money=remainder,
                                        name=name)
         return self.DEFICIT.format(money=-remainder,
